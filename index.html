@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Void Studios</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="login">
+  <h1>VOID STUDIOS</h1>
+  <p>Enter GitHub Token</p>
+
+  <input id="token" placeholder="github token..." />
+  <button onclick="connect()">Connect</button>
+</div>
+
+<div id="app" class="hidden">
+
+  <header>
+    <h2>VOID STUDIOS DASHBOARD</h2>
+    <button onclick="loadRepos()">Refresh</button>
+  </header>
+
+  <div id="repos"></div>
+
+  <div id="viewer" class="hidden">
+    <h3 id="repoName"></h3>
+    <pre id="files"></pre>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
