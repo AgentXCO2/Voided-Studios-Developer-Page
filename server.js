@@ -8,13 +8,15 @@ app.use(express.static("public"));
 const CLIENT_ID = process.env.YOUR_CLIENT_ID;
 const CLIENT_SECRET = process.env.YOUR_CLIENT_SECRET;
 
-// ------------------ LOGIN ------------------
+const BASE_URL = "https://voided-studios-developer-page.onrender.com";
+
+// 🟣 LOGIN
 app.get("/login", (req, res) => {
   const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
   res.redirect(url);
 });
 
-// ------------------ CALLBACK ------------------
+// 🟣 CALLBACK
 app.get("/auth/callback", async (req, res) => {
   const code = req.query.code;
 
@@ -30,10 +32,10 @@ app.get("/auth/callback", async (req, res) => {
 
   const data = await tokenRes.json();
 
-  res.redirect(`/index.html?token=${data.access_token}`);
+  res.redirect(`${BASE_URL}/index.html?token=${data.access_token}`);
 });
 
-// ------------------ REPOS ------------------
+// 🟣 REPOS
 app.get("/api/repos", async (req, res) => {
   const token = req.headers.authorization;
 
@@ -47,42 +49,40 @@ app.get("/api/repos", async (req, res) => {
   res.json(await response.json());
 });
 
-// ------------------ FILE TREE ------------------
+// 🟣 FILE TREE
 app.get("/api/tree", async (req, res) => {
   const { owner, repo, token } = req.query;
 
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=1`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     }
   );
 
   res.json(await response.json());
 });
 
-// ------------------ GET FILE ------------------
+// 🟣 GET FILE
 app.get("/api/file", async (req, res) => {
   const { owner, repo, path, token } = req.query;
 
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     }
   );
 
   const data = await response.json();
-  const content = Buffer.from(data.content, "base64").toString("utf-8");
 
-  res.json({ content, sha: data.sha });
+  res.json({
+    content: Buffer.from(data.content, "base64").toString("utf-8"),
+    sha: data.sha
+  });
 });
 
-// ------------------ SAVE FILE ------------------
+// 🟣 UPDATE FILE
 app.post("/api/update", async (req, res) => {
   const { token, owner, repo, path, message, content, sha } = req.body;
 
