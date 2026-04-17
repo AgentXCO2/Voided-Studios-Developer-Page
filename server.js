@@ -8,7 +8,7 @@ app.use(express.static("public"));
 const CLIENT_ID = process.env.YOUR_CLIENT_ID;
 const CLIENT_SECRET = process.env.YOUR_CLIENT_SECRET;
 
-const BASE_URL = "https://voided-studios-developer-page.onrender.com";
+const BASE_URL = "https://agentxco2.github.io/Voided-Studios-Editor/";
 
 // ---------------- LOGIN ----------------
 app.get("/login", (req, res) => {
