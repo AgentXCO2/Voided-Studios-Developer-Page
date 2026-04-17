@@ -97,9 +97,16 @@ app.get("/api/file", async (req, res) => {
   });
 });
 
-// ---------------- SAVE ----------------
+// ---------------- SAVE / CREATE FILE ----------------
 app.post("/api/update", async (req, res) => {
   const { token, owner, repo, path, message, content, sha } = req.body;
+
+  const body = {
+    message,
+    content: Buffer.from(content || "").toString("base64")
+  };
+
+  if (sha) body.sha = sha;
 
   const r = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
@@ -109,11 +116,7 @@ app.post("/api/update", async (req, res) => {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json"
       },
-      body: JSON.stringify({
-        message,
-        content: Buffer.from(content).toString("base64"),
-        sha
-      })
+      body: JSON.stringify(body)
     }
   );
 
@@ -156,7 +159,7 @@ app.post("/api/rename", async (req, res) => {
       },
       body: JSON.stringify({
         message: "rename file",
-        content: Buffer.from(content).toString("base64")
+        content: Buffer.from(content || "").toString("base64")
       })
     }
   );
