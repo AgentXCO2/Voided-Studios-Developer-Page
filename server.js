@@ -10,32 +10,36 @@ const CLIENT_SECRET = process.env.YOUR_CLIENT_SECRET;
 
 const BASE_URL = "https://voided-studios-developer-page.onrender.com";
 
-// 🟣 LOGIN
+// LOGIN
 app.get("/login", (req, res) => {
-  const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
-  res.redirect(url);
+  res.redirect(
+    `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`
+  );
 });
 
-// 🟣 CALLBACK
+// CALLBACK
 app.get("/auth/callback", async (req, res) => {
   const code = req.query.code;
 
-  const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
-    method: "POST",
-    headers: { Accept: "application/json" },
-    body: new URLSearchParams({
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      code
-    })
-  });
+  const tokenRes = await fetch(
+    "https://github.com/login/oauth/access_token",
+    {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: new URLSearchParams({
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        code
+      })
+    }
+  );
 
   const data = await tokenRes.json();
 
   res.redirect(`${BASE_URL}/index.html?token=${data.access_token}`);
 });
 
-// 🟣 REPOS
+// REPOS
 app.get("/api/repos", async (req, res) => {
   const token = req.headers.authorization;
 
@@ -49,7 +53,7 @@ app.get("/api/repos", async (req, res) => {
   res.json(await response.json());
 });
 
-// 🟣 FILE TREE
+// TREE
 app.get("/api/tree", async (req, res) => {
   const { owner, repo, token } = req.query;
 
@@ -63,7 +67,7 @@ app.get("/api/tree", async (req, res) => {
   res.json(await response.json());
 });
 
-// 🟣 GET FILE
+// FILE
 app.get("/api/file", async (req, res) => {
   const { owner, repo, path, token } = req.query;
 
@@ -82,7 +86,7 @@ app.get("/api/file", async (req, res) => {
   });
 });
 
-// 🟣 UPDATE FILE
+// SAVE
 app.post("/api/update", async (req, res) => {
   const { token, owner, repo, path, message, content, sha } = req.body;
 
