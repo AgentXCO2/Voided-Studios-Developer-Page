@@ -71,7 +71,7 @@ async function loadTree(owner, repo) {
   });
 }
 
-// ---------------- OPEN FILE ----------------
+// ---------------- FILE ----------------
 async function openFile(path) {
   const res = await fetch(
     `/api/file?owner=${currentRepo.owner}&repo=${currentRepo.repo}&path=${path}&token=${token}`
@@ -114,18 +114,16 @@ async function deleteFile() {
       owner: currentRepo.owner,
       repo: currentRepo.repo,
       path: currentFile.path,
-      sha: currentFile.sha,
-      message: "delete file"
+      sha: currentFile.sha
     })
   });
 
   alert("Deleted");
 }
 
-// ---------------- RENAME ----------------
-async function renameFile() {
-  const newName = prompt("New file name?");
-
+// ---------------- INLINE RENAME ----------------
+async function renameFileInline() {
+  const newPath = prompt("New name?");
   const content = document.getElementById("editor").value;
 
   await fetch("/api/rename", {
@@ -136,11 +134,25 @@ async function renameFile() {
       owner: currentRepo.owner,
       repo: currentRepo.repo,
       oldPath: currentFile.path,
-      newPath: newName,
+      newPath,
       content,
       sha: currentFile.sha
     })
   });
 
   alert("Renamed 🔥");
+}
+
+// ---------------- DEPLOY PANEL ----------------
+function openDeployPanel() {
+  const choice = prompt(
+`Render Deploy Options:
+1 - Redeploy
+2 - Clear build cache & deploy
+3 - Open dashboard`
+  );
+
+  if (choice === "1" || choice === "2" || choice === "3") {
+    window.open("https://dashboard.render.com", "_blank");
+  }
 }
