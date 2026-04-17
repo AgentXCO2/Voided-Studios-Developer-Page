@@ -58,9 +58,7 @@ app.get("/api/orgs", async (req, res) => {
   const token = req.headers.authorization;
 
   const r = await fetch("https://api.github.com/user/orgs", {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: { Authorization: `Bearer ${token}` }
   });
 
   res.json(await r.json());
@@ -99,7 +97,7 @@ app.get("/api/file", async (req, res) => {
   });
 });
 
-// ---------------- SAVE FILE ----------------
+// ---------------- SAVE ----------------
 app.post("/api/update", async (req, res) => {
   const { token, owner, repo, path, message, content, sha } = req.body;
 
@@ -122,9 +120,9 @@ app.post("/api/update", async (req, res) => {
   res.json(await r.json());
 });
 
-// ---------------- DELETE FILE ----------------
+// ---------------- DELETE ----------------
 app.delete("/api/delete", async (req, res) => {
-  const { token, owner, repo, path, message, sha } = req.body;
+  const { token, owner, repo, path, sha } = req.body;
 
   const r = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
@@ -135,7 +133,7 @@ app.delete("/api/delete", async (req, res) => {
         Accept: "application/vnd.github+json"
       },
       body: JSON.stringify({
-        message,
+        message: "delete file",
         sha
       })
     }
@@ -144,11 +142,10 @@ app.delete("/api/delete", async (req, res) => {
   res.json(await r.json());
 });
 
-// ---------------- RENAME FILE ----------------
+// ---------------- RENAME ----------------
 app.post("/api/rename", async (req, res) => {
   const { token, owner, repo, oldPath, newPath, content, sha } = req.body;
 
-  // create new file
   await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${newPath}`,
     {
@@ -164,7 +161,6 @@ app.post("/api/rename", async (req, res) => {
     }
   );
 
-  // delete old file
   await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
     {
@@ -183,6 +179,4 @@ app.post("/api/rename", async (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(3000, () => {
-  console.log("Void Studios running");
-});
+app.listen(3000, () => console.log("Void Studios running"));
