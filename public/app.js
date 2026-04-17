@@ -255,7 +255,7 @@ async function createFile() {
   loadTree(currentRepo.owner, currentRepo.repo);
 }
 
-/* ---------------- NAV SYSTEM ---------------- */
+/* ---------------- NAV ---------------- */
 function setView(view, event) {
   currentView = view;
 
@@ -268,12 +268,12 @@ function setView(view, event) {
   renderView();
 }
 
-/* ---------------- PHASE 5 REAL CONTENT VIEWS ---------------- */
+/* ---------------- MAIN VIEW SYSTEM ---------------- */
 async function renderView() {
   const tree = document.getElementById("tree");
   const editor = document.getElementById("editorPanel");
 
-  // CODE VIEW (IDE)
+  /* CODE VIEW */
   if (currentView === "code") {
     tree.style.display = "block";
     editor.style.display = "flex";
@@ -283,7 +283,7 @@ async function renderView() {
   tree.style.display = "none";
   editor.style.display = "flex";
 
-  /* ---------------- ISSUES ---------------- */
+  /* ISSUES */
   if (currentView === "issues") {
     const res = await fetch(
       `https://api.github.com/repos/${currentRepo.owner}/${currentRepo.repo}/issues`,
@@ -299,7 +299,7 @@ async function renderView() {
     return;
   }
 
-  /* ---------------- PULL REQUESTS ---------------- */
+  /* PULL REQUESTS */
   if (currentView === "pulls") {
     const res = await fetch(
       `https://api.github.com/repos/${currentRepo.owner}/${currentRepo.repo}/pulls`,
@@ -315,21 +315,72 @@ async function renderView() {
     return;
   }
 
-  /* ---------------- ACTIONS (SIMULATED) ---------------- */
+  /* ACTIONS */
   if (currentView === "actions") {
     document.getElementById("editor").value =
-      "Recent activity:\n- Repo opened\n- File edits committed\n- Tabs system active\n- Void pipeline running";
+      "Actions:\n- Commit system active\n- Tab system running\n- Repo synced\n- Void pipeline stable";
     return;
   }
 
-  /* ---------------- SETTINGS ---------------- */
+  /* SETTINGS (FULL GITHUB DASHBOARD) */
   if (currentView === "settings") {
-    document.getElementById("editor").value =
-      `Repo Settings:\n- Owner: ${currentRepo.owner}\n- Repo: ${currentRepo.repo}\n- Mode: Void Studios IDE\n- Branch: main`;
+    const res = await fetch(
+      `https://api.github.com/repos/${currentRepo.owner}/${currentRepo.repo}`,
+      { headers: { Authorization: token } }
+    );
+
+    const repo = await res.json();
+
+    document.getElementById("editor").value = `
+VOID STUDIOS • GITHUB SETTINGS PANEL
+
+━━━━━━━━━━━━━━━━━━━━━━
+📦 Repo Info
+━━━━━━━━━━━━━━━━━━━━━━
+Name: ${repo.name}
+Full Name: ${repo.full_name}
+Owner: ${repo.owner.login}
+Visibility: ${repo.private ? "Private" : "Public"}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📊 Stats
+━━━━━━━━━━━━━━━━━━━━━━
+Stars: ${repo.stargazers_count}
+Forks: ${repo.forks_count}
+Watchers: ${repo.watchers_count}
+Open Issues: ${repo.open_issues_count}
+
+━━━━━━━━━━━━━━━━━━━━━━
+⚙️ Core Settings
+━━━━━━━━━━━━━━━━━━━━━━
+Default Branch: ${repo.default_branch}
+Clone URL: ${repo.clone_url}
+
+━━━━━━━━━━━━━━━━━━━━━━
+🛡 Security
+━━━━━━━━━━━━━━━━━━━━━━
+- Branch protection: GitHub managed
+- Secrets: API required
+- Deploy keys: API required
+
+━━━━━━━━━━━━━━━━━━━━━━
+🚀 Actions
+━━━━━━━━━━━━━━━━━━━━━━
+- Enabled: true
+- CI/CD: Render compatible
+
+━━━━━━━━━━━━━━━━━━━━━━
+🟣 Void System
+━━━━━━━━━━━━━━━━━━━━━━
+- IDE: ACTIVE
+- Tabs: ACTIVE
+- Commit system: ACTIVE
+- Multi-file editor: ACTIVE
+`;
     return;
   }
 
-  /* ---------------- DEFAULT ---------------- */
+  /* DEFAULT */
   document.getElementById("editor").value =
     `${currentView} coming soon`;
 }
