@@ -10,10 +10,11 @@
 <div id="layout">
 
   <div id="sidebar">
-    <h2>🟣 VOID</h2>
+    <h2>🟣 VOID STUDIOS</h2>
 
     <button onclick="loadOrgs()">Load Orgs</button>
     <button onclick="loadRepos()">Load Repos</button>
+    <button onclick="openDeployPanel()">Deploy</button>
 
     <div id="orgList"></div>
     <div id="repoList"></div>
@@ -29,7 +30,7 @@
     <div id="bar">
       <span id="fileName">No file</span>
 
-      <button onclick="renameFile()">Rename</button>
+      <button onclick="renameFileInline()">Rename</button>
       <button onclick="deleteFile()">Delete</button>
       <button onclick="saveFile()">Save</button>
     </div>
