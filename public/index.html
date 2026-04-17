@@ -7,13 +7,13 @@
 
 <body>
 
-<a href="/login" id="loginBtn">Login with GitHub</a>
+<a id="loginBtn" href="/login">LOGIN WITH GITHUB</a>
 
 <div id="app" class="hidden">
 
   <div id="top">
     <h2>VOID STUDIOS</h2>
-    <button onclick="loadRepos()">Refresh</button>
+    <button onclick="loadRepos()">Load Repos</button>
   </div>
 
   <div id="layout">
@@ -25,15 +25,11 @@
 
     <div id="main">
       <h3 id="fileName">No file selected</h3>
-
       <textarea id="editor"></textarea>
-
-      <button onclick="saveFile()">Save to GitHub</button>
+      <button onclick="saveFile()">Save</button>
     </div>
 
   </div>
-
-  <div id="repos"></div>
 
 </div>
 
