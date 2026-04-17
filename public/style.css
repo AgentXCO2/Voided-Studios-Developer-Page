@@ -22,6 +22,7 @@ body {
   background: #0d0b14;
   padding: 10px;
   border-right: 1px solid #3c096c;
+  overflow-y: auto;
 }
 
 #editorPanel {
@@ -44,6 +45,13 @@ textarea {
   border: none;
   padding: 10px;
   font-family: monospace;
+}
+
+input {
+  background: #0a0a0f;
+  color: white;
+  border: 1px solid #3c096c;
+  padding: 5px;
 }
 
 button {
