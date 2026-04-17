@@ -5,6 +5,34 @@ body {
   color: #c77dff;
 }
 
+/* NAV */
+#repoNav {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #0a0a0f;
+  border-bottom: 1px solid #3c096c;
+  overflow-x: auto;
+}
+
+.navItem {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+  color: #c77dff;
+}
+
+.navItem:hover {
+  background: #1a0b2e;
+}
+
+.navItem.active {
+  background: #5a189a;
+  color: white;
+}
+
+/* LAYOUT */
 #layout {
   display: flex;
   height: 100vh;
