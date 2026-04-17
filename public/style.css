@@ -31,6 +31,33 @@ body {
   flex-direction: column;
 }
 
+/* TABS */
+#tabsBar {
+  display: flex;
+  background: #0a0a0f;
+  border-bottom: 1px solid #3c096c;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-right: 1px solid #1a1a2e;
+  display: flex;
+  gap: 8px;
+}
+
+.tab.active {
+  background: #12002b;
+  color: #80ffdb;
+}
+
+.closeTab {
+  color: red;
+  cursor: pointer;
+}
+
+/* BAR */
 #bar {
   display: flex;
   justify-content: space-between;
@@ -45,13 +72,6 @@ textarea {
   border: none;
   padding: 10px;
   font-family: monospace;
-}
-
-input {
-  background: #0a0a0f;
-  color: white;
-  border: 1px solid #3c096c;
-  padding: 5px;
 }
 
 button {
