@@ -1,10 +1,12 @@
 let token = localStorage.getItem("token");
 let currentRepo = null;
 
+let currentView = "code";
+
 let openTabs = [];
 let activeTab = null;
 
-// ---------------- ORGS ----------------
+/* ---------------- ORGS ---------------- */
 async function loadOrgs() {
   const res = await fetch("/api/orgs", {
     headers: { Authorization: token }
@@ -23,7 +25,7 @@ async function loadOrgs() {
   });
 }
 
-// ---------------- REPOS ----------------
+/* ---------------- REPOS ---------------- */
 async function loadRepos() {
   const res = await fetch("/api/repos", {
     headers: { Authorization: token }
@@ -45,9 +47,11 @@ async function loadRepos() {
   });
 }
 
-// ---------------- TREE ----------------
+/* ---------------- TREE ---------------- */
 async function loadTree(owner, repo) {
   currentRepo = { owner, repo };
+
+  document.getElementById("repoTitle").innerText = repo;
 
   const res = await fetch(
     `/api/tree?owner=${owner}&repo=${repo}&token=${token}`
@@ -69,12 +73,14 @@ async function loadTree(owner, repo) {
       tree.appendChild(div);
     }
   });
+
+  renderView();
 }
 
-// ---------------- OPEN FILE (TABS) ----------------
+/* ---------------- OPEN FILE (TABS) ---------------- */
 async function openFile(path) {
-
   let existing = openTabs.find(t => t.path === path);
+
   if (existing) return setActiveTab(path);
 
   const res = await fetch(
@@ -94,7 +100,7 @@ async function openFile(path) {
   renderTabs();
 }
 
-// ---------------- TABS ----------------
+/* ---------------- TABS ---------------- */
 function renderTabs() {
   const bar = document.getElementById("tabsBar");
   bar.innerHTML = "";
@@ -135,13 +141,18 @@ function closeTab(path) {
 
   if (activeTab === path) {
     activeTab = openTabs[0]?.path || null;
+
     if (activeTab) setActiveTab(activeTab);
+    else {
+      document.getElementById("editor").value = "";
+      document.getElementById("fileName").innerText = "No file";
+    }
   }
 
   renderTabs();
 }
 
-// ---------------- EDIT TRACKING ----------------
+/* ---------------- EDIT TRACKING ---------------- */
 document.getElementById("editor").addEventListener("input", () => {
   const tab = openTabs.find(t => t.path === activeTab);
   if (!tab) return;
@@ -152,13 +163,13 @@ document.getElementById("editor").addEventListener("input", () => {
   renderTabs();
 });
 
-// ---------------- SAVE ----------------
+/* ---------------- SAVE ---------------- */
 async function saveFile() {
   const msg = document.getElementById("commitMsg").value;
-  if (!msg) return alert("Commit message required");
-
   const tab = openTabs.find(t => t.path === activeTab);
+
   if (!tab) return;
+  if (!msg) return alert("Commit message required");
 
   await fetch("/api/update", {
     method: "POST",
@@ -176,11 +187,9 @@ async function saveFile() {
 
   tab.dirty = false;
   renderTabs();
-
-  alert("Committed 🔥");
 }
 
-// ---------------- DELETE ----------------
+/* ---------------- DELETE ---------------- */
 async function deleteFile() {
   const tab = openTabs.find(t => t.path === activeTab);
   if (!tab) return;
@@ -200,7 +209,7 @@ async function deleteFile() {
   closeTab(tab.path);
 }
 
-// ---------------- RENAME ----------------
+/* ---------------- RENAME ---------------- */
 async function renameFileInline() {
   const tab = openTabs.find(t => t.path === activeTab);
   if (!tab) return;
@@ -225,7 +234,7 @@ async function renameFileInline() {
   closeTab(tab.path);
 }
 
-// ---------------- CREATE FILE ----------------
+/* ---------------- CREATE FILE ---------------- */
 async function createFile() {
   const path = prompt("File name:");
   if (!path) return;
@@ -248,4 +257,45 @@ async function createFile() {
   });
 
   loadTree(currentRepo.owner, currentRepo.repo);
+}
+
+/* ---------------- VIEW SYSTEM ---------------- */
+function setView(view, event) {
+  currentView = view;
+
+  document.querySelectorAll(".navItem").forEach(n => {
+    n.classList.remove("active");
+  });
+
+  if (event) event.target.classList.add("active");
+
+  renderView();
+}
+
+function renderView() {
+  const tree = document.getElementById("tree");
+  const editor = document.getElementById("editorPanel");
+
+  if (currentView === "code") {
+    tree.style.display = "block";
+    editor.style.display = "flex";
+    return;
+  }
+
+  tree.style.display = "none";
+  editor.style.display = "flex";
+
+  const msgMap = {
+    issues: "Issues coming soon 🧠",
+    pulls: "Pull Requests coming soon 🔥",
+    actions: "Actions / Deploy logs coming soon ⚙️",
+    projects: "Projects coming soon 📊",
+    wiki: "Wiki coming soon 📘",
+    security: "Security coming soon 🛡",
+    insights: "Insights coming soon 📈",
+    settings: "Settings coming soon ⚙️"
+  };
+
+  document.getElementById("editor").value =
+    msgMap[currentView] || "Coming soon";
 }
